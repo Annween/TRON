@@ -21,15 +21,9 @@ class Player
 
     /* IL FAUT CREER UN ENUMERATEUR */
 
-    static  boolean[][] abMatrix = new boolean[30][20];
-
-    static int s32CountUp = 0;
-    static int s32CountDown = 0;
-    static int s32CountLeft = 0;
-    static int s32CountRight = 0;
-
-
-
+    static  boolean[][] abMatrix = new boolean[30][20];  /* Initialization of a boolean matrix
+                                                            false : cell is free
+                                                            true : cell is taken */
     public static void main(String[] args) {
 
         Scanner in = new Scanner(System.in);
@@ -46,22 +40,25 @@ class Player
 
         // game loop
 
-        while (true)
-        {
+        while (true) {
 
             int N = in.nextInt(); // total number of players (2 to 4).
 
             int P = in.nextInt(); // your player number (0 to 3).
             /* Current position */
-            int s32PrevX = 0;
-            int s32PrevY = 0;
-            int s32CurrX = 0;
-            int s32CurrY = 0;
-            /* 0 = up, 1 = down, 2 = left, 3 right, 4 unknown */
-            int s32Dir = 4;
+            int PrevX = 0;
+            int PrevY = 0;
+            int CurrX = 0;
+            int CurrY = 0;
 
-            for (int i = 0; i < N; i++)
-            {
+            int CountUp = 0;
+            int CountDown = 0;
+            int CountLeft = 0;
+            int CountRight = 0;
+            /* 0 = up, 1 = down, 2 = left, 3 right, 4 unknown */
+            int Dir = 4;
+
+            for (int i = 0; i < N; i++) {
 
                 int X0 = in.nextInt(); // starting X coordinate of lightcycle (or -1)
 
@@ -71,191 +68,165 @@ class Player
 
                 int Y1 = in.nextInt(); // starting Y coordinate of lightcycle (can be the same as Y0 if you play before this player)
 
-                if (   (X1 != -1)
-                        && (Y1 != -1))
-                {
+                if ((X1 != -1)
+                        && (Y1 != -1)) {
                     abMatrix[X1][Y1] = true;
                 }
 
                 /* Refresh current position */
-                if (i == P)
-                {
-                    s32PrevX = s32CurrX;
-                    s32PrevY = s32CurrY;
-                    s32CurrX = X1;
-                    s32CurrY = Y1;
+                if (i == P) {
+                    PrevX = CurrX;
+                    PrevY = CurrY;
+                    CurrX = X1;
+                    CurrY = Y1;
 
-                    if  (s32PrevX < s32CurrX)
-                    {
-                        s32Dir = 3;
+                    if (PrevX < CurrX) {
+                        Dir = 3;
+                    } else if (PrevX > CurrX) {
+                        Dir = 2;
+                    } else if (PrevY < CurrY) {
+                        Dir = 1;
+                    } else if (PrevY > CurrY) {
+                        Dir = 0;
                     }
-                    else if (s32PrevX > s32CurrX)
-                    {
-                        s32Dir = 2;
-                    }
-                    else if (s32PrevY < s32CurrY)
-                    {
-                        s32Dir = 1;
-                    }
-                    else if (s32PrevY > s32CurrY)
-                    {
-                        s32Dir = 0;
-                    }
-                    /* Supposed to happend only at first round */
-                    else
-                    {
-                        s32Dir = 4;
+                    /* Supposed to happen only at first round */
+                    else {
+                        Dir = 4;
                     }
                 }
             }
 
-            do
-            {
-                if ((s32CurrY - s32CountUp - 1) <= 0)
-                {
+            do {
+                if ((CurrY - CountUp - 1) <= 0) {
+                    break;
+                } else if (abMatrix[CurrX][CurrY - CountUp - 1]) /* is true */ {
                     break;
                 }
-                else if (abMatrix[s32CurrX][s32CurrY - s32CountUp - 1]) /* is true */
-                {
+                CountUp = CountUp + 1;
+            } while (CountUp < 20);
+
+
+            do {
+                if ((CurrY + CountDown + 1) >= 20) {
+                    break;
+                } else if (abMatrix[CurrX][CurrY + CountDown + 1]) /*is true */ {
                     break;
                 }
-                s32CountUp = s32CountUp + 1;
-            }   while (s32CountUp < 20);
 
+                CountDown = CountDown + 1;
+            } while (CountDown < 20);
 
-                do
-                {
-                    if ((s32CurrY + s32CountDown + 1) >= 20)
-                    {
-                        break;
-                    }
-                    else if (abMatrix[s32CurrX][s32CurrY + s32CountDown + 1]) /*is true */
-                    {
-                        break;
-                    }
+            do {
+                if ((CurrX + CountRight + 1) >= 30) {
+                    break;
+                } else if (abMatrix[CurrX + CountRight + 1][CurrY]) /*is true */ {
+                    break;
+                }
+                CountRight = CountRight + 1;
+            } while (CountRight < 20);
 
-                    s32CountDown = s32CountDown + 1;
-                }   while (s32CountDown < 20);
-
-                do
-                {
-                    if ((s32CurrX + s32CountRight + 1) >= 30)
-                    {
-                        break;
-                    }
-                    else if (abMatrix[s32CurrX + s32CountRight + 1][s32CurrY]) /*is true */
-                    {
-                        break;
-                    }
-                    s32CountRight = s32CountRight + 1;
-                }   while (s32CountRight < 20);
-
-                do
-                {
-                    if ((s32CurrX - s32CountLeft - 1) >= 30)
-                    {
-                        break;
-                    }
-                    else if (abMatrix[s32CurrX - s32CountLeft - 1][s32CurrY]) /* is true */
-                    {
-                        break;
-                    }
-                    s32CountLeft = s32CountLeft + 1;
-                }   while (s32CountLeft < 20);
-
+            do {
+                if ((CurrX - CountLeft - 1) >= 30) {
+                    break;
+                } else if (abMatrix[CurrX - CountLeft + 1][CurrY]) /* is true */ {
+                    break;
+                }
+                CountLeft = CountLeft + 1;
+            } while (CountLeft < 20);
 
 
                 /* Dir unknown == init devrait être une fonction avec dir et count en para */
-                if (s32Dir == 4) {
+                if (Dir == 4) {
 
 
-                    if ((s32CountUp >= s32CountDown)
-                            && (s32CountUp >= s32CountLeft)
-                            && (s32CountUp >= s32CountRight)) {
+                    if ((CountUp >= CountDown)
+                            && (CountUp >= CountLeft)
+                            && (CountUp >= CountRight)) {
                         System.out.println("UP");
-                    } else if ((s32CountDown >= s32CountUp)
-                            && (s32CountDown >= s32CountLeft)
-                            && (s32CountDown >= s32CountRight)) {
+                    } else if ((CountDown >= CountUp)
+                            && (CountDown >= CountLeft)
+                            && (CountDown >= CountRight)) {
                         System.out.println("DOWN");
-                    } else if ((s32CountLeft >= s32CountUp)
-                            && (s32CountLeft >= s32CountDown)
-                            && (s32CountLeft >= s32CountRight)) {
+                    } else if ((CountLeft >= CountUp)
+                            && (CountLeft >= CountDown)
+                            && (CountLeft >= CountRight)) {
                         System.out.println("LEFT");
-                    } else if (s32CountRight >= s32CountDown) {
+                    } else if (CountRight >= CountDown) {
                         System.out.println("RIGHT");
                     } else {
                         System.out.println("RIGHT");
                     }
                 }
                 /* Up */
-                else if (s32Dir == 0) {
-                    if ((s32CountUp >= s32CountDown)
-                            && (s32CountUp >= s32CountLeft)
-                            && (s32CountUp >= s32CountRight)) {
+                else if (Dir == 0) {
+                    if ((CountUp >= CountDown)
+                            && (CountUp >= CountLeft)
+                            && (CountUp >= CountRight)) {
                         System.out.println("UP");
-                    } else if ((s32CountLeft >= s32CountUp)
-                            && (s32CountLeft >= s32CountDown)
-                            && (s32CountLeft >= s32CountRight)) {
+                    } else if ((CountLeft >= CountUp)
+                            && (CountLeft >= CountDown)
+                            && (CountLeft >= CountRight)) {
                         System.out.println("LEFT");
-                    } else if ((s32CountRight >= s32CountUp)
-                            && (s32CountRight >= s32CountLeft)
-                            && (s32CountRight >= s32CountDown)) {
+                    } else if ((CountRight >= CountUp)
+                            && (CountRight >= CountLeft)
+                            && (CountRight >= CountDown)) {
                         System.out.println("RIGHT");
                     } else {
                         System.out.println("RIGHT");
                     }
                 }
                 /* Down */
-                else if (s32Dir == 1) {
-                    if ((s32CountDown >= s32CountUp)
-                            && (s32CountDown >= s32CountLeft)
-                            && (s32CountDown >= s32CountRight)) {
+                else if (Dir == 1) {
+                    if ((CountDown >= CountUp)
+                            && (CountDown >= CountLeft)
+                            && (CountDown >= CountRight)) {
                         System.out.println("DOWN");
-                    } else if ((s32CountLeft >= s32CountUp)
-                            && (s32CountLeft >= s32CountDown)
-                            && (s32CountLeft >= s32CountRight)) {
+                    } else if ((CountLeft >= CountUp)
+                            && (CountLeft >= CountDown)
+                            && (CountLeft >= CountRight)) {
                         System.out.println("LEFT");
-                    } else if (s32CountRight >= s32CountUp) {
+                    } else if (CountRight >= CountUp) {
                         System.out.println("RIGHT");
                     } else {
                         System.out.println("RIGHT");
                     }
                 }
-                /* left */
-                else if (s32Dir == 2) {
-                    if ((s32CountUp >= s32CountDown)
-                            && (s32CountUp >= s32CountLeft)
-                            && (s32CountUp >= s32CountRight)) {
+                /* Left */
+                else if (Dir == 2) {
+                    if ((CountUp >= CountDown)
+                            && (CountUp >= CountLeft)
+                            && (CountUp >= CountRight)) {
                         System.out.println("UP");
-                    } else if ((s32CountDown >= s32CountUp)
-                            && (s32CountDown >= s32CountLeft)
-                            && (s32CountDown >= s32CountRight)) {
+                    } else if ((CountDown >= CountUp)
+                            && (CountDown >= CountLeft)
+                            && (CountDown >= CountRight)) {
                         System.out.println("DOWN");
-                    } else if ((s32CountLeft >= s32CountUp)
-                            && (s32CountLeft >= s32CountDown)
-                            && (s32CountLeft >= s32CountRight)) {
+                    } else if ((CountLeft >= CountUp)
+                            && (CountLeft >= CountDown)
+                            && (CountLeft >= CountRight)) {
                         System.out.println("LEFT");
                     } else {
                         System.out.println("RIGHT");
                     }
                 }
-                /* right */
-                else if (s32Dir == 3) {
-                    if ((s32CountUp >= s32CountDown)
-                            && (s32CountUp >= s32CountLeft)
-                            && (s32CountUp >= s32CountRight)) {
+                /* Right */
+                else if (Dir == 3) {
+                    if ((CountUp >= CountDown)
+                            && (CountUp >= CountLeft)
+                            && (CountUp >= CountRight)) {
                         System.out.println("UP");
-                    } else if ((s32CountDown >= s32CountUp)
-                            && (s32CountDown >= s32CountLeft)
-                            && (s32CountDown >= s32CountRight)) {
+                    } else if ((CountDown >= CountUp)
+                            && (CountDown >= CountLeft)
+                            && (CountDown >= CountRight)) {
                         System.out.println("DOWN");
-                    } else if (s32CountRight >= s32CountUp && s32CountRight >= s32CountLeft) {
+                    } else if (CountRight >= CountUp && CountRight >= CountLeft) {
                         System.out.println("RIGHT");
                     } else {
                         System.out.println("RIGHT");
                     }
                 }
-            }
-                /* Throw exception method must be added */
+
+        }
+
         }
     }
