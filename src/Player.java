@@ -18,9 +18,6 @@ import java.math.*;
 class Player
 {
 
-
-    /* IL FAUT CREER UN ENUMERATEUR */
-
     static  boolean[][] abMatrix = new boolean[30][20];  /* Initialization of a boolean matrix
                                                             false : cell is free
                                                             true : cell is taken */
