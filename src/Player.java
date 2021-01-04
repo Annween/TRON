@@ -135,7 +135,7 @@ class Player
             } while (CountLeft < 20);
 
 
-                /* Dir unknown == init devrait être une fonction avec dir et count en para */
+                /* Dir unknown == init */
                 if (Dir == 4) {
 
 
